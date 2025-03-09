@@ -1,13 +1,19 @@
+import os
+import json
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-# Load Firebase credentials (replace with your actual file path)
-cred = credentials.Certificate("chat-with-mert-firebase-adminsdk-fbsvc-9733b19087.json")
+# Load Firebase credentials from environment variable
+firebase_json = os.getenv("FIREBASE_CREDENTIALS")
 
-# Initialize Firebase
-firebase_admin.initialize_app(cred)
+if not firebase_json:
+    raise ValueError("❌ FIREBASE_CREDENTIALS environment variable is not set!")
 
-# Connect to Firestore
-db = firestore.client()
-
-print("🔥 Firebase Firestore is connected!")
+try:
+    cred_dict = json.loads(firebase_json)  # Convert string back to JSON
+    cred = credentials.Certificate(cred_dict)
+    firebase_admin.initialize_app(cred)
+    db = firestore.client()
+    print("🔥 Firebase Firestore is connected!")
+except Exception as e:
+    print(f"❌ Error initializing Firebase: {e}")

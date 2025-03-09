@@ -1,9 +1,11 @@
+import os
 from openai import OpenAI
 from messagefunctions import get_messages_by_conversation  # 🚀 Removed save_message from here
 
-# Read API key
-with open("api_key.txt", "r", encoding="utf-8") as file:
-    api_key = file.read().strip()
+# Load API key from environment variable
+api_key = os.getenv("OPENAI_API_KEY")
+if not api_key:
+    raise ValueError("❌ OPENAI_API_KEY environment variable is not set!")
 
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
